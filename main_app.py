@@ -181,7 +181,7 @@ if __name__ == '__main__':
 			with tab2:
 				st.subheader('デイ締切時刻（薄暮含む）')
 				dfD=df2[(df2['開催区分']=='昼間') | (df2['開催区分']=='薄暮')]
-				dfD=dfD.drop(li[3:scale[sel_scale][2]],axis=1)
+				dfD=dfD.drop(li[3:scale[sel_scale][3]],axis=1)
 				st.write(f'<style>table {{border-collapse: collapse;}} table, th, td {{border: 1px solid black; padding: 5px;}}</style>', unsafe_allow_html=True)
 				st.dataframe(dfD.style.applymap(lambda x: 'background-color: yellow' if x in duplicates else 'background-color: white'))
 				# Excel ファイルに書き込む
@@ -194,7 +194,7 @@ if __name__ == '__main__':
 			with tab3:
 				st.subheader('ナイター締切時刻（ミッドナイト含む）')
 				dfN=df2[(df2['開催区分']=='ナイター') | (df2['開催区分']=='ミッドナイト')]
-				dfN=dfN.drop(li[3:scale[sel_scale][2]],axis=1)
+				dfN=dfN.drop(li[3:scale[sel_scale][4]],axis=1)
 				st.write(f'<style>table {{border-collapse: collapse;}} table, th, td {{border: 1px solid black; padding: 5px;}}</style>', unsafe_allow_html=True)
 				st.dataframe(dfN.style.applymap(lambda x: 'background-color: yellow' if x in duplicates else 'background-color: white'))
 				# Excel ファイルに書き込む
