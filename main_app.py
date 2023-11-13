@@ -4,6 +4,7 @@ import sqlite3
 import hashlib
 import datetime
 
+scale=[[10,90,4,15,40],[20,45,3,9,21]]
 
 conn = sqlite3.connect('database.db')
 c = conn.cursor()
@@ -70,16 +71,18 @@ if __name__ == '__main__':
 		st.title('テスト版0.1')
 		st.caption('これはstreamlitのテスト用のアプリです')
 		st.subheader('締切時刻の重複確認プログラム')
+		selected_item = st.radio('スケール',['10min', '20min'],horizontal=True)
+		sel_scale=0 if selected_item=='10min' else 1
 
 		#締切時刻の90マスにマッピングする関数
 		def frameexpand(df1,df2):
 			for k in range(len(df1)):
 				##ilocではエラー「IndexError: iloc cannot enlarge its target objec」
-				df2.loc[k]= [df1.iloc[k,0], df1.iloc[k,1], df1.iloc[k,2]]+['-' for i in range(45)]
+				df2.loc[k]= [df1.iloc[k,0], df1.iloc[k,1], df1.iloc[k,2]]+['-' for i in range(scale[sel_scale][1])]
 				for j in range(12):
 					time_str = df1.iloc[k,3+j]
 					time_obj = datetime.datetime.strptime(time_str, "%H:%M")
-					for i in range(45):
+					for i in range(scale[sel_scale][1]):
 						if time_obj < list_90[i]:
 							df2.iloc[k,3+i]=time_obj.time().strftime("%H:%M")
 							break
@@ -88,12 +91,12 @@ if __name__ == '__main__':
 		
 
 		#時間軸リストの作成
-		count_time=datetime.datetime(year=1900,month=1,day=1,hour=8,minute=20)
+		count_time=datetime.datetime(year=1900,month=1,day=1,hour=8,minute=scale[sel_scale][0])
 		list_90=[]
-		for i in range(45):
+		for i in range(scale[sel_scale][1]):
 			list_90.append(count_time)
-			count_time += datetime.timedelta(minutes=20)
-		li=['開催場','グレード','開催区分']+[str(list_90[i].time().strftime("%H:%M")) for i in range(45)]
+			count_time += datetime.timedelta(minutes=scale[sel_scale][0])
+		li=['開催場','グレード','開催区分']+[str(list_90[i].time().strftime("%H:%M")) for i in range(scale[sel_scale][1])]
 
 		df2=pd.DataFrame(columns=li)
 		#df=pd.DataFrame()
@@ -165,7 +168,7 @@ if __name__ == '__main__':
 			with tab1:
 				st.subheader('モーニング締切時刻')
 				dfM=df2[df2['開催区分']=='モーニング']
-				dfM=dfM.drop(li[3:3],axis=1)
+				dfM=dfM.drop(li[3:scale[sel_scale][2]],axis=1)
 				st.write(f'<style>table {{border-collapse: collapse;}} table, th, td {{border: 1px solid black; padding: 5px;}}</style>', unsafe_allow_html=True)
 				st.dataframe(dfM.style.applymap(lambda x: 'background-color: yellow' if x in duplicates else 'background-color: white'))
 				# Excel ファイルに書き込む
@@ -178,7 +181,7 @@ if __name__ == '__main__':
 			with tab2:
 				st.subheader('デイ締切時刻（薄暮含む）')
 				dfD=df2[(df2['開催区分']=='昼間') | (df2['開催区分']=='薄暮')]
-				dfD=dfD.drop(li[3:9],axis=1)
+				dfD=dfD.drop(li[3:scale[sel_scale][2]],axis=1)
 				st.write(f'<style>table {{border-collapse: collapse;}} table, th, td {{border: 1px solid black; padding: 5px;}}</style>', unsafe_allow_html=True)
 				st.dataframe(dfD.style.applymap(lambda x: 'background-color: yellow' if x in duplicates else 'background-color: white'))
 				# Excel ファイルに書き込む
@@ -191,7 +194,7 @@ if __name__ == '__main__':
 			with tab3:
 				st.subheader('ナイター締切時刻（ミッドナイト含む）')
 				dfN=df2[(df2['開催区分']=='ナイター') | (df2['開催区分']=='ミッドナイト')]
-				dfN=dfN.drop(li[3:21],axis=1)
+				dfN=dfN.drop(li[3:scale[sel_scale][2]],axis=1)
 				st.write(f'<style>table {{border-collapse: collapse;}} table, th, td {{border: 1px solid black; padding: 5px;}}</style>', unsafe_allow_html=True)
 				st.dataframe(dfN.style.applymap(lambda x: 'background-color: yellow' if x in duplicates else 'background-color: white'))
 				# Excel ファイルに書き込む
