@@ -99,7 +99,7 @@ def get_file_from_gdrive(cwd,file_name):
 
 if __name__ == '__main__':
     if login():
-        st.title('テスト版0.1')
+        st.title('テスト版0.2')
         st.caption('これはstreamlitのテスト用のアプリです')
         st.subheader('締切時刻の重複確認プログラム')
         selected_item = st.radio('スケール',['10min', '20min'],horizontal=True)
