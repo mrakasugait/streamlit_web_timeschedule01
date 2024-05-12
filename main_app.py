@@ -113,7 +113,7 @@ if __name__ == '__main__':
                 df2.loc[k] = [df1.iloc[k,0],df1.iloc[k,1],df1.iloc[k,2]]+['-' for i in range(scale[sel_scale][1])]
                 for j in range(12):
                     time_str = df1.iloc[k,3+j]
-                    ###時間が未入力の場合ココがエラーとなる。その場合floatとなるので
+                    #時間が未入力の場合ココがエラーとなる。その場合floatとなるので
                     if type(time_str) == str:
                         time_obj = datetime.datetime.strptime(time_str,"%H:%M")
                         for i in range(scale[sel_scale][1]):
@@ -121,7 +121,6 @@ if __name__ == '__main__':
                                 df2.iloc[k,3+i] = time_obj.time().strftime("%H:%M")
                                 break
                     else:
-                        #df2.iloc[k, 3+j] = '-'
                         nodata.add(df2.iloc[k,0])
                         break
             return df2
