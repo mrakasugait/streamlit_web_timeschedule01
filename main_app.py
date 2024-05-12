@@ -104,20 +104,26 @@ if __name__ == '__main__':
         st.subheader('締切時刻の重複確認プログラム')
         selected_item = st.radio('スケール',['10min', '20min'],horizontal=True)
         sel_scale = 0 if selected_item == '10min' else 1
+        nodata = set()
 
         # 締切時刻の90マスにマッピングする関数
         def frameexpand(df1, df2):
             for k in range(len(df1)):
                 # ilocではエラー「IndexError: iloc cannot enlarge its target objec」
-                df2.loc[k] = [df1.iloc[k,0],df1.iloc[k,1],
-                df1.iloc[k, 2]]+['-' for i in range(scale[sel_scale][1])]
+                df2.loc[k] = [df1.iloc[k,0],df1.iloc[k,1],df1.iloc[k,2]]+['-' for i in range(scale[sel_scale][1])]
                 for j in range(12):
-                    time_str = df1.iloc[k, 3+j]
-                    time_obj = datetime.datetime.strptime(time_str,"%H:%M")
-                    for i in range(scale[sel_scale][1]):
-                        if time_obj < list_90[i]:
-                            df2.iloc[k, 3+i] = time_obj.time().strftime("%H:%M")
-                            break
+                    time_str = df1.iloc[k,3+j]
+                    ###時間が未入力の場合ココがエラーとなる。その場合floatとなるので
+                    if type(time_str) == str:
+                        time_obj = datetime.datetime.strptime(time_str,"%H:%M")
+                        for i in range(scale[sel_scale][1]):
+                            if time_obj < list_90[i]:
+                                df2.iloc[k,3+i] = time_obj.time().strftime("%H:%M")
+                                break
+                    else:
+                        #df2.iloc[k, 3+j] = '-'
+                        nodata.add(df2.iloc[k,0])
+                        break
             return df2
 
         # 時間軸リストの作成
@@ -126,62 +132,54 @@ if __name__ == '__main__':
         for i in range(scale[sel_scale][1]):
             list_90.append(count_time)
             count_time += datetime.timedelta(minutes=scale[sel_scale][0])
-        li = ['開催場', 'グレード', '開催区分']+[str(list_90[i].time().strftime("%H:%M")) for i in range(scale[sel_scale][1])]
-
+        li = ['開催場','グレード','開催区分']+[str(list_90[i].time().strftime("%H:%M")) for i in range(scale[sel_scale][1])]
         df2 = pd.DataFrame(columns=li)
-        # df=pd.DataFrame()
 
         # 初回起動時かどうかの判定・初期化処理
         if "count" not in st.session_state:
             st.session_state.count = 0
 
         def show_data(file_name,df2):
-            print('読み込み成功')
-
-            # df = pd.read_excel(uploaded_file, sheet_name=None)
             df = pd.read_excel(file_name,sheet_name=None)
+            print('読み込み成功')
             dflist = list(df)
-
             option = st.selectbox('開催日の選択', dflist)
             st.session_state.dflist = dflist
             st.session_state.option = option
-
             kaisai_date = str(df[option].iloc[1,1])[2:] + '('+str(df[option].iloc[0,15])+')'
             kaisai_count = str(df[option].iloc[2,1])[2:]
             kaisai_info = f'{kaisai_date} : {kaisai_count}'
             st.write('---')
             st.text(kaisai_info)
             st.session_state.kaisai_info = kaisai_info
-
-            df[option].drop(df[option].index[[0, 1, 2, 3, 4]], inplace=True)
+            df[option].drop(df[option].index[[0,1,2,3,4]], inplace=True)
             df[option].drop(df[option].columns[1], axis=1, inplace=True)
             df[option].columns = ['開催場','グレード','開催区分','1R','2R','3R','4R','5R','6R','7R','8R','9R','10R','11R','12R']
             dropIndex = df[option][df[option]['グレード'] == "-"].index
             df[option].drop(dropIndex, inplace=True)
             df[option].reset_index(drop=True, inplace=True)
             df[option].set_index('開催場')
-
             df2 = frameexpand(df[option],df2)
 
             #　重複判定
             list_ALL = list((df2.iloc[:,3:].values).flatten())
             while '-' in list_ALL:
-                list_ALL.remove('-')
-            # print(len(list_ALL)-len(set(list_ALL)))            
+                list_ALL.remove('-') 
             duplicates = list(set([x for x in list_ALL if list_ALL.count(x) > 1]))
             duplicates.sort()
             st.session_state.duplicates = duplicates
             print(f'重複時刻：{duplicates}')
-
             #df2.style.set_properties(**{'color': 'lawngreen'})
             st.write(f'<style>table {{border-collapse: collapse;}} table, th, td {{border: 1px solid black; padding: 5px;}}</style>',unsafe_allow_html=True)
             st.dataframe(df2.style.applymap(lambda x: 'background-color: yellow;color: red' if x in duplicates else 'background-color: white'))
-
-            if len(duplicates) > 0:
+            if len(duplicates):
                 st.write(f'<span style="color:red">重複{len(duplicates)}箇所:{duplicates}</span>',unsafe_allow_html=True)
             else:
                 st.write(f'<span style="color:black">重複箇所はありません。ご調整ありがとうございました!complete!</span>',unsafe_allow_html=True)
                 st.balloons()
+            if len(nodata):
+                st.write(f'<span style="color:red">未入力{len(nodata)}場:{nodata}</span>',unsafe_allow_html=True)
+            
             st.session_state['df'] = df2
             st.session_state.count += 1
 
@@ -289,7 +287,6 @@ if __name__ == '__main__':
                 with open('output.xlsx','rb') as f:
                     bytes = f.read()
                     st.download_button('Download Excel',data=bytes,file_name='output_kanto.xlsx',mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-
 
 
         # サイドバーにウィジェット
