@@ -193,7 +193,7 @@ if __name__ == '__main__':
             duplicates.sort()
             st.session_state.duplicates = duplicates
             print(f'重複時刻：{duplicates}')
-
+            st.write(int(kaisai_count)+1)
             st.write(
                 f'<style>table {{border-collapse: collapse;}} table, th, td {{border: 1px solid black; padding: 5px;}}</style>', unsafe_allow_html=True)
             st.dataframe(df2.style.applymap(
