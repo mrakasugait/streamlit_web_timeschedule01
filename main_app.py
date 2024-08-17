@@ -193,11 +193,10 @@ if __name__ == '__main__':
             duplicates.sort()
             st.session_state.duplicates = duplicates
             print(f'重複時刻：{duplicates}')
-            st.write(int(kaisai_count)+1)
             st.write(
                 f'<style>table {{border-collapse: collapse;}} table, th, td {{border: 1px solid black; padding: 5px;}}</style>', unsafe_allow_html=True)
             st.dataframe(df2.style.applymap(
-                lambda x: 'background-color: yellow' if x in duplicates else 'background-color: white'),height=(int(kaisai_count)+1)*30)
+                lambda x: 'background-color: yellow' if x in duplicates else 'background-color: white'),height=(int(kaisai_count.replace('場',''))+1)*30)
 
             if len(duplicates) > 0:
                 st.write(f'<span style="color:red">重複箇所:{duplicates}</span>', unsafe_allow_html=True)
