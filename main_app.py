@@ -199,8 +199,7 @@ if __name__ == '__main__':
                 lambda x: 'background-color: yellow' if x in duplicates else 'background-color: white'))
 
             if len(duplicates) > 0:
-                st.write(f'<span style="color:red">重複箇所:{
-                         duplicates}</span>', unsafe_allow_html=True)
+                st.write(f'<span style="color:red">重複箇所:{duplicates}</span>', unsafe_allow_html=True)
             else:
                 st.write(
                     f'<span style="color:black">重複箇所はありません。皆様、ご協力ありがとうございました！complete!</span>', unsafe_allow_html=True)
@@ -282,8 +281,7 @@ if __name__ == '__main__':
                     lambda x: 'background-color: yellow' if x in st.session_state.duplicates else 'background-color: white'))
                 # st.text(f'重複箇所:{st.session_state.duplicates}')
                 if len(st.session_state.duplicates) > 0:
-                    st.write(f'<span style="color:red">重複箇所:{
-                             st.session_state.duplicates}</span>', unsafe_allow_html=True)
+                    st.write(f'<span style="color:red">重複箇所:{st.session_state.duplicates}</span>', unsafe_allow_html=True)
                 else:
                     st.write(
                         f'<span style="color:black">重複箇所はありません。complete!</span>', unsafe_allow_html=True)
