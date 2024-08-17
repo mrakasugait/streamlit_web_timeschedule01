@@ -86,8 +86,7 @@ def get_file_from_gdrive(cwd, file_name):
     # API名（ここでは"drive"）、APIのバージョン（ここでは"v3"）、認証情報を指定
     service = build("drive", "v3", credentials=creds)
     # Google Drive上のファイルを検索するためのクエリ
-    query = f"name='{
-        file_name}' and mimeType='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'"
+    query = f"name='{file_name}' and mimeType='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'"
     results = service.files().list(q=query).execute()
     items = results.get("files", [])
     if not items:
