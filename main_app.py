@@ -104,7 +104,7 @@ def get_file_from_gdrive(cwd, file_name):
 
 if __name__ == '__main__':
     if login():
-        st.title('テスト版0.2.20240818)')
+        st.title('テスト版0.2.20240818')
         st.caption('これはstreamlitのテスト用のアプリです')
         st.subheader('締切時刻の重複確認プログラム')
         st.caption('場外発売管理システムに入力された進行時間を1時間毎に反映しています')
@@ -197,7 +197,7 @@ if __name__ == '__main__':
             st.write(
                 f'<style>table {{border-collapse: collapse;}} table, th, td {{border: 1px solid black; padding: 5px;}}</style>', unsafe_allow_html=True)
             st.dataframe(df2.style.applymap(
-                lambda x: 'background-color: yellow' if x in duplicates else 'background-color: white'))
+                lambda x: 'background-color: yellow' if x in duplicates else 'background-color: white'),height=300)
 
             if len(duplicates) > 0:
                 st.write(f'<span style="color:red">重複箇所:{duplicates}</span>', unsafe_allow_html=True)
