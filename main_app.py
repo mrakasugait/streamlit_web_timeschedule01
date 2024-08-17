@@ -197,7 +197,7 @@ if __name__ == '__main__':
             st.write(
                 f'<style>table {{border-collapse: collapse;}} table, th, td {{border: 1px solid black; padding: 5px;}}</style>', unsafe_allow_html=True)
             st.dataframe(df2.style.applymap(
-                lambda x: 'background-color: yellow' if x in duplicates else 'background-color: white'),height=700)
+                lambda x: 'background-color: yellow' if x in duplicates else 'background-color: white'),)
 
             if len(duplicates) > 0:
                 st.write(f'<span style="color:red">重複箇所:{duplicates}</span>', unsafe_allow_html=True)
