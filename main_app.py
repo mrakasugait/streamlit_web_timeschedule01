@@ -159,7 +159,7 @@ if __name__ == '__main__':
             df = pd.read_excel('./data/' + file_name, sheet_name=None)
             dflist = list(df)
 
-            option = st.selectbox('開催日の選択', dflist,index=-1)
+            option = st.selectbox('開催日の選択', dflist,index=len(dflist))
             st.session_state.dflist = dflist
             st.session_state.option = option
 
