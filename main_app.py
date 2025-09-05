@@ -141,7 +141,11 @@ if __name__ == '__main__':
             st.session_state.count = 0
 
         def show_data(file_name,df2):
-            df = pd.read_excel(file_name,sheet_name=None)
+            #df = pd.read_excel(file_name,sheet_name=None)
+            from datetime import timedelta
+            today = datetime.datetime.now()
+            sheet_list = [(today + timedelta(days=i)).strftime("%Y%m%d") for i in range(30)]
+            df = pd.read_excel(file_name,sheet_name=sheet_list)
             print('読み込み成功')
             dflist = list(df)
             option = st.selectbox('開催日の選択', dflist,index=len(dflist)-1)
@@ -314,5 +318,6 @@ if __name__ == '__main__':
                     st.write(f'<span style="color:red">重複箇所:{st.session_state.duplicates}</span>',unsafe_allow_html=True)
                 else:
                     st.write(f'<span style="color:black">重複箇所はありません。complete!</span>',unsafe_allow_html=True)
+
 
 
