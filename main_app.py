@@ -99,7 +99,7 @@ def get_file_from_gdrive(cwd,file_name):
 
 if __name__ == '__main__':
     if login():
-        st.title('テスト版0.2.20240818')
+        st.title('テスト版0.2.20250906')
         st.caption('これはstreamlitのテスト用のアプリです')
         st.subheader('締切時刻の重複確認プログラム(timeschedule06)')
         st.caption('場外発売管理システムに入力された進行時間を1時間毎に反映しています')
@@ -318,6 +318,7 @@ if __name__ == '__main__':
                     st.write(f'<span style="color:red">重複箇所:{st.session_state.duplicates}</span>',unsafe_allow_html=True)
                 else:
                     st.write(f'<span style="color:black">重複箇所はありません。complete!</span>',unsafe_allow_html=True)
+
 
 
 
