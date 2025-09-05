@@ -8,8 +8,8 @@ from google.oauth2 import service_account
 from googleapiclient.discovery import build
 import os
 
-scale = [[10,90,4,15,40], [20,45,3,9,21]]
-
+#scale = [[10,90,4,15,40], [20,45,3,9,21]]
+scale = [[20,45,3,9,21],[10,90,4,15,40],[5,180,4,15,40]]
 #ログイン用のデータベース処理
 conn = sqlite3.connect('database.db')
 c = conn.cursor()
@@ -103,8 +103,12 @@ if __name__ == '__main__':
         st.caption('これはstreamlitのテスト用のアプリです')
         st.subheader('締切時刻の重複確認プログラム(timeschedule06)')
         st.caption('場外発売管理システムに入力された進行時間を1時間毎に反映しています')
-        selected_item = st.radio('スケール',['10min', '20min'],horizontal=True)
-        sel_scale = 0 if selected_item == '10min' else 1
+        # 選択肢のリスト
+        scale_options = ['20min', '10min', '5min']
+        # ラジオボタンで選択
+        selected_item = st.radio('スケール', scale_options, horizontal=True)
+        # 選択されたアイテムのインデックスを取得
+        sel_scale = scale_options.index(selected_item)
         nodata = set()
 
         # 締切時刻の90マスにマッピングする関数
@@ -318,6 +322,7 @@ if __name__ == '__main__':
                     st.write(f'<span style="color:red">重複箇所:{st.session_state.duplicates}</span>',unsafe_allow_html=True)
                 else:
                     st.write(f'<span style="color:black">重複箇所はありません。complete!</span>',unsafe_allow_html=True)
+
 
 
 
